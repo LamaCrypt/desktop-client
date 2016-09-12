@@ -9,12 +9,13 @@
 package ch.lamacrypt;
 
 import ch.lamacrypt.internal.Settings;
+import ch.lamacrypt.internal.crypto.DefaultCipher;
 import ch.lamacrypt.visual.LoginForm;
 import ch.lamacrypt.visual.TOSDisclaimer;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.security.Security;
+import java.util.Scanner;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
@@ -37,10 +38,17 @@ public class Main {
         System.setProperty("javax.net.ssl.trustStorePassword", "LCTSPW");
 
         // getting the config file and checking if the TOS have been agreed to
-        File config = new File("config");
+        File config = new File("desktop-client.conf");
         if (config.exists()) {
-            BufferedReader in = new BufferedReader(new FileReader(new File("config")));
-            Settings.setTOSAgreed(in.readLine().equals("agreedTOS=yes"));
+            Scanner in = new Scanner(new FileReader(config));
+            while (in.hasNext()) {
+                String tmpStr = in.next();
+                if (tmpStr.startsWith("scryptfactor")) {
+                    DefaultCipher.setSCryptFactor(Integer.parseInt(tmpStr.substring(13, 15)));
+                } else if (tmpStr.startsWith("agreedTOS")) {
+                    Settings.setTOSAgreed(tmpStr.contains("yes"));
+                }
+            }
             in.close();
             Settings.setIsNew(false);
         } else {

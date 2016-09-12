@@ -10,8 +10,10 @@ package ch.lamacrypt.visual;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 import javax.swing.UIManager;
 
 /**
@@ -116,11 +118,22 @@ public class TOSDisclaimer extends javax.swing.JFrame {
     }//GEN-LAST:event_noButtonActionPerformed
 
     private void yesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yesButtonActionPerformed
-        File config = new File("config");
+        File config = new File("desktop-client.conf");
+        int scryptFactor = 21;
+
         try {
-            config.createNewFile();
+            Scanner in = new Scanner(new FileReader(config));
+            while (in.hasNext()) {
+                String tmpStr = in.next();
+                if (tmpStr.startsWith("scryptfactor")) {
+                    scryptFactor = Integer.parseInt(tmpStr.substring(13, 15));
+                }
+            }
+            in.close();
+
             BufferedWriter out = new BufferedWriter(new FileWriter(config));
-            out.write("agreedTOS=yes");
+            out.write("agreedTOS=yes\n");
+            out.write("scryptfactor=" + scryptFactor + "\n");
             out.close();
         } catch (IOException ex) {
             ErrorHandler.showError(ex);
