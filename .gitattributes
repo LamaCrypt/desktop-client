@@ -1,0 +1,13 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+*.gradle text diff=groovy
+*.html     text diff=html
+*.java     text diff=java
+*.pem      text
+*.tmpl     text
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.data binary
