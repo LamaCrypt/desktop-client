@@ -17,8 +17,6 @@ public abstract class Settings {
 
     private static byte version = 0x00;
     private static long quotaSize;
-    private static int K1_N = 20,
-            K2_N = 19;
     private static String DLDir = null;
     private static boolean isDLDIR = false,
             isWorking = false,
@@ -40,22 +38,6 @@ public abstract class Settings {
 
     public static byte getVersion() {
         return version;
-    }
-
-    public static void setK1_N(int newVal) {
-        K1_N = newVal;
-    }
-
-    public static void setK2_N(int newVal) {
-        K2_N = newVal;
-    }
-
-    public static int getK1_N() {
-        return K1_N;
-    }
-
-    public static int getK2_N() {
-        return K2_N;
     }
 
     public static String getDLDir() {

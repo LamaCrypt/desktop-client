@@ -172,8 +172,6 @@ public abstract class DefaultCipher {
         switch (Settings.getVersion()) {
             case 0x00:
                 GCMCipher gcm = new GCMCipher(dos, dis);
-                GCMCipher.setK1N(Settings.getK1_N());
-                GCMCipher.setK2N(Settings.getK2_N());
                 reply = gcm.encrypt_V00(input);
                 break;
         }

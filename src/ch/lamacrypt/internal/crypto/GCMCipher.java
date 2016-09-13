@@ -168,9 +168,6 @@ public final class GCMCipher {
     protected int encrypt_V00(File inputFile) throws IOException, InvalidKeyException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
         DefaultFrame.setFileQueueItemStatus("Generating header");
 
-        // defining input stream
-        InputStream input = new FileInputStream(inputFile);
-
         // getting the encryption password
         char[] pass = DefaultCipher.getEncryptionPassword();
         // generating Sx, Nx, R, Kx
@@ -186,10 +183,10 @@ public final class GCMCipher {
                     (byte) (byteFileCnt[1] + 0x01), epoch[0], epoch[1], epoch[2], (byte) (epoch[3] + 0x01)},
                 R = GPCrypto.randomGen(R_BYTES);
         final SecretKey K1 = new SecretKeySpec(SCrypt.generate(GPCrypto.charToByte(pass),
-                Sk1, (int) Math.pow(2, GCMCipher.K1_KDF_N), KDF_r, KDF_p, CIPHER_KEY_BITS / 8), 0,
+                Sk1, (int) Math.pow(2, K1_KDF_N), KDF_r, KDF_p, CIPHER_KEY_BITS / 8), 0,
                 CIPHER_KEY_BITS / 8, "AES"),
-                K2 = new SecretKeySpec(SCrypt.generate(R, Sk2, (int) Math.pow(2, K2_KDF_N), KDF_r,
-                        KDF_p, CIPHER_KEY_BITS / 8), 0, CIPHER_KEY_BITS / 8, "AES");
+                K2 = new SecretKeySpec(SCrypt.generate(R, Sk2, (int) Math.pow(2, K2_KDF_N),
+                        KDF_r, KDF_p, CIPHER_KEY_BITS / 8), 0, CIPHER_KEY_BITS / 8, "AES");
 
         // writing header
         this.cipher.init(Cipher.ENCRYPT_MODE, K1, new GCMParameterSpec(
@@ -197,7 +194,7 @@ public final class GCMCipher {
         dos.write((byte) 0x00);
         dos.write(Sk1);
         dos.write(N1);
-        dos.write(DatatypeConverter.parseHexBinary(Integer.toHexString(GCMCipher.K1_KDF_N)));
+        dos.write(DatatypeConverter.parseHexBinary(Integer.toHexString(K1_KDF_N)));
         dos.write(cipher.doFinal(R));
         dos.write(Sk2);
         dos.write(N2);
@@ -211,6 +208,9 @@ public final class GCMCipher {
                 percentage = fileSize / 100L,
                 bytesRead = 0L,
                 iterCnt;
+
+        // defining input stream and
+        InputStream input = new FileInputStream(inputFile);
 
         if (fileSize < BUFFER_SIZE) {
             r = input.read(buf, 0, (int) fileSize);
