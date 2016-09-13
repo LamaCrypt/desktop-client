@@ -222,6 +222,7 @@ public class PreferencesFrame extends javax.swing.JFrame {
         workFactorLabel.setText("Key derivation work factor");
 
         workFactorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fast (less secure)", "Normal", "Slow (more secure)" }));
+        workFactorComboBox.setSelectedIndex(1);
         workFactorComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 workFactorComboBoxActionPerformed(evt);

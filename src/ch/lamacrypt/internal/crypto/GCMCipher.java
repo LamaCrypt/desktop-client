@@ -186,7 +186,7 @@ public final class GCMCipher {
                     (byte) (byteFileCnt[1] + 0x01), epoch[0], epoch[1], epoch[2], (byte) (epoch[3] + 0x01)},
                 R = GPCrypto.randomGen(R_BYTES);
         final SecretKey K1 = new SecretKeySpec(SCrypt.generate(GPCrypto.charToByte(pass),
-                Sk1, (int) Math.pow(2, K1_KDF_N), KDF_r, KDF_p, CIPHER_KEY_BITS / 8), 0,
+                Sk1, (int) Math.pow(2, GCMCipher.K1_KDF_N), KDF_r, KDF_p, CIPHER_KEY_BITS / 8), 0,
                 CIPHER_KEY_BITS / 8, "AES"),
                 K2 = new SecretKeySpec(SCrypt.generate(R, Sk2, (int) Math.pow(2, K2_KDF_N), KDF_r,
                         KDF_p, CIPHER_KEY_BITS / 8), 0, CIPHER_KEY_BITS / 8, "AES");
@@ -197,7 +197,7 @@ public final class GCMCipher {
         dos.write((byte) 0x00);
         dos.write(Sk1);
         dos.write(N1);
-        dos.write(DatatypeConverter.parseHexBinary(Integer.toHexString(K1_KDF_N)));
+        dos.write(DatatypeConverter.parseHexBinary(Integer.toHexString(GCMCipher.K1_KDF_N)));
         dos.write(cipher.doFinal(R));
         dos.write(Sk2);
         dos.write(N2);
@@ -232,7 +232,6 @@ public final class GCMCipher {
             dos.write(this.cipher.doFinal(buf));
         } else {
             iterCnt = fileSize / BUFFER_SIZE;
-            System.out.println(iterCnt);
 
             for (long i = 0; i < iterCnt; i++) {
                 input.read(buf);
@@ -245,7 +244,6 @@ public final class GCMCipher {
             }
 
             r = input.read(buf, 0, (int) (fileSize % BUFFER_SIZE));
-            System.out.println(r);
             dos.write(this.cipher.doFinal(buf, 0, r));
         }
 

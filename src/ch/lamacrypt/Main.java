@@ -52,6 +52,7 @@ public class Main {
             in.close();
             Settings.setIsNew(false);
         } else {
+            config.createNewFile();
             Settings.setIsNew(true);
         }
 
