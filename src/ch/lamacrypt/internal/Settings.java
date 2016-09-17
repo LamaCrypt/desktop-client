@@ -8,6 +8,13 @@
  */
 package ch.lamacrypt.internal;
 
+import ch.lamacrypt.visual.ErrorHandler;
+import com.sun.management.OperatingSystemMXBean;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * Provides means for getting and setting settings, used in the GUI
  *
@@ -15,9 +22,12 @@ package ch.lamacrypt.internal;
  */
 public abstract class Settings {
 
+    private static final OperatingSystemMXBean os = (OperatingSystemMXBean) java.lang.management.ManagementFactory.getOperatingSystemMXBean();
+    private static final File config = new File("desktop-client.conf");
     private static byte version = 0x00;
     private static long quotaSize;
     private static String DLDir = null;
+    private static int startScryptN;
     private static boolean isDLDIR = false,
             isWorking = false,
             isNew,
@@ -80,13 +90,43 @@ public abstract class Settings {
     public static boolean isTOSAgreed() {
         return TOSAgreed;
     }
-    
-    public static void setLogged(boolean newVal){
+
+    public static void setLogged(boolean newVal) {
         logged = newVal;
     }
-    
-    public static boolean getLogged(){
+
+    public static boolean getLogged() {
         return logged;
+    }
+
+    public static int getStartupScryptN() {
+        return startScryptN;
+    }
+
+    public static void setStartupScryptN(int N) {
+        startScryptN = N;
+    }
+
+    /**
+     * Updates the scrypt CPU/memory parameter in the config file
+     *
+     * @param N new CPU/memory parameter for scrypt
+     */
+    public static void updateScryptN(int N) {
+        try {
+            config.delete();
+            config.createNewFile();
+            BufferedWriter out = new BufferedWriter(new FileWriter(config));
+            out.write("agreedTOS=yes\n");
+            out.write("scryptfactor=" + N + "\n");
+            out.close();
+        } catch (IOException ex) {
+            ErrorHandler.showError(ex);
+        }
+    }
+
+    public static long getMaxRAM() {
+        return os.getTotalPhysicalMemorySize();
     }
 
 }

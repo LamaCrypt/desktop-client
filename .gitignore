@@ -20,3 +20,4 @@ build/
 
 manifest.mf
 build.xml
+desktop-client.conf

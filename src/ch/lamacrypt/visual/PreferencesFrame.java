@@ -21,8 +21,10 @@ import javax.swing.UIManager;
  */
 public class PreferencesFrame extends javax.swing.JFrame {
 
-    private int workFactorIndex;
+    private int workFactorIndex,
+            nextN;
     private boolean isDlDir,
+            nextNmodified = false,
             startup = true;
     private JFileChooser fc;
 
@@ -37,7 +39,7 @@ public class PreferencesFrame extends javax.swing.JFrame {
     }
 
     /**
-     * Sets the current settings into the Settings class
+     * Applies the current settings into the Settings class
      */
     private void setParams() {
         // download directory settings
@@ -49,17 +51,13 @@ public class PreferencesFrame extends javax.swing.JFrame {
         }
         Settings.setIsDLDIR(isDlDir);
 
-        switch (workFactorIndex) {
-            case 0:
-                DefaultCipher.setSCryptFactor(20);
-                break;
-            case 1:
-                DefaultCipher.setSCryptFactor(21);
-                break;
-            case 2:
-                DefaultCipher.setSCryptFactor(22);
-                break;
+        // scrypt N parameter
+        if (nextNmodified) {
+            Settings.updateScryptN(nextN);
+        } else {
+            Settings.updateScryptN(indexToN(workFactorIndex));
         }
+        DefaultCipher.setScryptFactor(indexToN(workFactorIndex));
     }
 
     /**
@@ -75,20 +73,45 @@ public class PreferencesFrame extends javax.swing.JFrame {
         }
         isDlDir = Settings.isDLDir();
 
-        switch (DefaultCipher.getSCryptFactor()) {
-            case 20:
-                workFactorComboBox.setSelectedIndex(0);
-                workFactorIndex = 0;
+        // scrypt N parameter
+        workFactorComboBox.setSelectedIndex(NToIndex(DefaultCipher.getScryptFactor()));
+        workFactorIndex = NToIndex(DefaultCipher.getScryptFactor());
+    }
+
+    private int indexToN(int index) {
+        int res = 21;
+
+        switch (index) {
+            case 0:
+                res = 20;
                 break;
-            case 21:
-                workFactorComboBox.setSelectedIndex(1);
-                workFactorIndex = 1;
+            case 1:
+                res = 21;
                 break;
-            case 22:
-                workFactorComboBox.setSelectedIndex(2);
-                workFactorIndex = 2;
+            case 2:
+                res = 22;
                 break;
         }
+
+        return res;
+    }
+
+    private int NToIndex(int N) {
+        int res = 1;
+
+        switch (N) {
+            case 20:
+                res = 0;
+                break;
+            case 21:
+                res = 1;
+                break;
+            case 22:
+                res = 2;
+                break;
+        }
+
+        return res;
     }
 
     /**
@@ -325,16 +348,42 @@ public class PreferencesFrame extends javax.swing.JFrame {
         if (!startup) {
             String msg = "Are you sure you wish to change this security setting ?";
             if (workFactorComboBox.getSelectedIndex() == 0) {
-                msg += "\nFaster key derivation makes decryption easier !";
+                msg += "\nFaster key derivation makes attacks easier !";
             }
-            
+
             int res = JOptionPane.showConfirmDialog(this, msg, "Change settings",
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
             if (res == JOptionPane.YES_OPTION) {
-                workFactorIndex = workFactorComboBox.getSelectedIndex();
-            } else {
-                workFactorComboBox.setSelectedIndex(workFactorIndex);
+                if (indexToN(workFactorComboBox.getSelectedIndex()) > Settings.getStartupScryptN()) {
+                    boolean enoughRAM = false;
+                    switch (workFactorComboBox.getSelectedIndex()) {
+                        case 1:
+                            enoughRAM = Settings.getMaxRAM() + 512 * (int) Math.pow(2, 20)
+                                    >= 4 * (int) Math.pow(2, 30);
+                            break;
+                        case 2:
+                            enoughRAM = Settings.getMaxRAM() + 512 * (int) Math.pow(2, 20)
+                                    >= 8 * (int) Math.pow(2, 30);
+                            break;
+                    }
+
+                    if (enoughRAM) {
+                        nextNmodified = true;
+                        nextN = indexToN(workFactorComboBox.getSelectedIndex());
+                        JOptionPane.showMessageDialog(this, "This setting will take effect the next time "
+                                + "you start the client.", "Change settings", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        nextNmodified = false;
+                        JOptionPane.showMessageDialog(this, "Your system needs at least "
+                                + (workFactorComboBox.getSelectedIndex() * 4 + 2) + "GiB of RAM to use this"
+                                + " setting.", "Change settings", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    workFactorComboBox.setSelectedIndex(workFactorIndex);
+                } else {
+                    nextNmodified = false;
+                    workFactorIndex = workFactorComboBox.getSelectedIndex();
+                }
             }
         }
     }//GEN-LAST:event_workFactorComboBoxActionPerformed

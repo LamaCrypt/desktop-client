@@ -10,6 +10,7 @@ package ch.lamacrypt;
 
 import ch.lamacrypt.internal.Settings;
 import ch.lamacrypt.internal.crypto.DefaultCipher;
+import ch.lamacrypt.visual.ErrorHandler;
 import ch.lamacrypt.visual.LoginForm;
 import ch.lamacrypt.visual.TOSDisclaimer;
 import java.io.File;
@@ -30,37 +31,43 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class Main {
 
     public static void main(String args[]) throws Exception {
-        // adding Bouncy Castle as provider
-        Security.addProvider(new BouncyCastleProvider());
+        if (Settings.getMaxRAM() + 256 * (int) Math.pow(2, 20) < 6 * (int) Math.pow(2, 30)) {
+            ErrorHandler.showError("your system doesn't have enough memory (min. 6GiB).");
+        } else {
+            // adding Bouncy Castle as provider
+            Security.addProvider(new BouncyCastleProvider());
 
-        // settings the TrustStore to LamaCrypt
-        System.setProperty("javax.net.ssl.trustStore", "LamaCryptTrustStore");
-        System.setProperty("javax.net.ssl.trustStorePassword", "LCTSPW");
+            // settings the TrustStore to LamaCrypt
+            System.setProperty("javax.net.ssl.trustStore", "LamaCryptTrustStore");
+            System.setProperty("javax.net.ssl.trustStorePassword", "LCTSPW");
 
-        // getting the config file and checking if the TOS have been agreed to
-        File config = new File("desktop-client.conf");
-        if (config.exists()) {
-            Scanner in = new Scanner(new FileReader(config));
-            while (in.hasNext()) {
-                String tmpStr = in.next();
-                if (tmpStr.startsWith("scryptfactor")) {
-                    DefaultCipher.setSCryptFactor(Integer.parseInt(tmpStr.substring(13, 15)));
-                } else if (tmpStr.startsWith("agreedTOS")) {
-                    Settings.setTOSAgreed(tmpStr.contains("yes"));
+            // getting the config file and checking if the TOS have been agreed to
+            File config = new File("desktop-client.conf");
+            if (config.exists()) {
+                Scanner in = new Scanner(new FileReader(config));
+                while (in.hasNext()) {
+                    String tmpStr = in.next();
+                    if (tmpStr.startsWith("scryptfactor")) {
+                        int N = Integer.parseInt(tmpStr.substring(13, 15));
+                        DefaultCipher.setScryptFactor(N);
+                        Settings.setStartupScryptN(N);
+                    } else if (tmpStr.startsWith("agreedTOS")) {
+                        Settings.setTOSAgreed(tmpStr.contains("yes"));
+                    }
                 }
+                in.close();
+                Settings.setIsNew(false);
+            } else {
+                config.createNewFile();
+                Settings.setIsNew(true);
             }
-            in.close();
-            Settings.setIsNew(false);
-        } else {
-            config.createNewFile();
-            Settings.setIsNew(true);
-        }
 
-        if (Settings.isTOSAgreed()) {
-            // starting GUI
-            LoginForm.main(null);
-        } else {
-            TOSDisclaimer.main(null);
+            if (Settings.isTOSAgreed()) {
+                // starting GUI
+                LoginForm.main(null);
+            } else {
+                TOSDisclaimer.main(null);
+            }
         }
     }
 }

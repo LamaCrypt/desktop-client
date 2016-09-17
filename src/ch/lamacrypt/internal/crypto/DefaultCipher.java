@@ -66,7 +66,7 @@ public abstract class DefaultCipher {
         GPCrypto.sanitize(encPass);
     }
 
-    public static void setSCryptFactor(int N) {
+    public static void setScryptFactor(int N) {
         switch (Settings.getVersion()) {
             case 0x00:
                 GCMCipher.setK1N(N);
@@ -74,7 +74,7 @@ public abstract class DefaultCipher {
         }
     }
 
-    public static int getSCryptFactor() {
+    public static int getScryptFactor() {
         int N;
         
         switch (Settings.getVersion()) {
