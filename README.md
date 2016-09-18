@@ -7,7 +7,6 @@ Check out the [Wiki](https://github.com/LamaCrypt/desktop-client/wiki) for more 
 <ul>
     <li>Bouncy Castle</li>
     <li>Apache Commons Net</li>
-    <li>JUnit (for tests only)</li>
 </ul>
 
 # License
