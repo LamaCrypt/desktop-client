@@ -77,7 +77,7 @@ public class ShareWorker extends SwingWorker<Integer, String> {
                         JOptionPane.showMessageDialog(null, txt, "Share file", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         ErrorHandler.showError("your encryption password is probably false or you have"
-                                + " downloaded corrupted data..");
+                                + " downloaded corrupted data.");
                     }
                     break;
                 case 2:

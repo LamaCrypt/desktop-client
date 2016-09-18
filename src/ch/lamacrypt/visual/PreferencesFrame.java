@@ -75,7 +75,7 @@ public class PreferencesFrame extends javax.swing.JFrame {
 
         // scrypt N parameter
         workFactorComboBox.setSelectedIndex(NToIndex(DefaultCipher.getScryptFactor()));
-        workFactorIndex = NToIndex(DefaultCipher.getScryptFactor());
+        workFactorIndex = workFactorComboBox.getSelectedIndex();
     }
 
     private int indexToN(int index) {
