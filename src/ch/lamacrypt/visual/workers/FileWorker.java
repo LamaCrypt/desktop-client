@@ -19,7 +19,6 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -241,13 +240,6 @@ public class FileWorker extends SwingWorker<Integer, String> {
 
         Settings.setIsWorking(false);
         return 1;
-    }
-
-    @Override
-    protected void process(List<String> chunks) {
-        chunks.stream().forEach((s) -> {
-            //log.append(s + "\n");
-        });
     }
 
     private void recursiveDownload(String remoteDirName, String dlFilePath) throws IOException, Exception {
