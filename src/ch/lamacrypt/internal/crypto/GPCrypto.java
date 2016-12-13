@@ -319,4 +319,22 @@ public abstract class GPCrypto {
     public static boolean checkUUID(String uuid) {
         return checkHex(uuid) && uuid.length() == 32;
     }
+
+    /**
+     * * Compares two byte arrays in constant time to prevent timing attacks
+     *
+     * @param a array a
+     * @param b array b
+     * @return {@code true} if the arrays are equal, else {@code false}
+     */
+    public static boolean isEqual(byte[] a, byte[] b) {
+        if (a.length != b.length) {
+            return false;
+        }
+        int result = 0;
+        for (int i = 0; i < a.length; i++) {
+            result |= a[i] ^ b[i];
+        }
+        return result == 0;
+    }
 }
