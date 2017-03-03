@@ -32,7 +32,8 @@ public abstract class Settings {
             isWorking = false,
             isNew,
             TOSAgreed = false,
-            logged = false;
+            logged = false,
+            isRestricted = false;
 
     public static void setQuotaSize(long quotaSize) {
         Settings.quotaSize = quotaSize;
@@ -127,6 +128,26 @@ public abstract class Settings {
 
     public static long getMaxRAM() {
         return os.getTotalPhysicalMemorySize();
+    }
+
+    /**
+     * Sets the status of cryptographic key restrictions
+     *
+     * @param b new value
+     */
+    public static void setIsRestricted(boolean b) {
+        isRestricted = b;
+    }
+
+    /**
+     * Returns the status of cryptographic key restrictions
+     * <p>
+     * <code>true</code> means keys may not be larger than 128 bits
+     *
+     * @return
+     */
+    public static boolean getIsRestricted() {
+        return isRestricted;
     }
 
 }

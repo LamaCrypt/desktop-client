@@ -20,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -133,16 +132,6 @@ public final class GCMCipher {
      *
      */
     protected GCMCipher(DataOutputStream dos, DataInputStream dis) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException, NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException {
-        /*
-        suppresses the restriction over keys larger than 128 bits due to the
-        JCE Unlimited Strength Jurisdiction Policy
-        see http://v.gd/HN1qpB
-         */
-        Field field = Class.forName("javax.crypto.JceSecurity").
-                getDeclaredField("isRestricted");
-        field.setAccessible(true);
-        field.set(null, java.lang.Boolean.FALSE);
-
         // instantiating AES-256 w/ GCM from Bouncy Castle
         this.cipher = Cipher.getInstance(CIPHER, CRYPTO_PROVIDER);
 
