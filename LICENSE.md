@@ -1,5 +1,27 @@
 #### <i>Last update: 18th September 2016</i>
 
+## Short version
+
+__Note: this shorter version of the LCSL is just for the sake of simplicity of reading and does not replace the full text.__
+
+The source code
+
+* is and will always be property of LamaCrypt, except stated otherwise.
+
+* can be used as you wish, so long it is for reviewing and commentary purposes. Other uses are not permitted.
+
+* may not be modified.
+
+* must always be given proper credit when shared in full or partially (don't forget to mention the license, us and this repo as origin)
+
+* is provided to you "as is" without any warranty of any kind and you are sole responsible of what happens with it in your hands.
+
+* may not be accessed if you do not agree with this license.
+
+Swiss law governs all interactions between you and LamaCrypt.
+
+## Long version
+
 # LamaCrypt Software License
 
 The LamaCrypt Software License ("LCSL") applies when you use the official LamaCrypt client software ("Client") to access the LamaCrypt online file storage service ("Service") and/or access the Client's source code.
