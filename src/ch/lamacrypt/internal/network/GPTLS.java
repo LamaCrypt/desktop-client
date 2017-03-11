@@ -29,7 +29,8 @@ public abstract class GPTLS {
         // sets the supported TLS protocol and cipher suites
         socket.setEnabledProtocols(new String[]{"TLSv1.2"});
         socket.setEnabledCipherSuites(new String[]{
-            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"});
+            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"});
     }
 
     /**
