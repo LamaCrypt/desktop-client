@@ -288,15 +288,12 @@ public abstract class GPCrypto {
      * @return
      */
     public static boolean checkHex(String hex) {
-        boolean res = true;
-
         try {
             DatatypeConverter.parseHexBinary(hex);
         } catch (IllegalArgumentException ex) {
-            res = false;
+            return false;
         }
-
-        return res;
+        return true;
     }
 
     /**
