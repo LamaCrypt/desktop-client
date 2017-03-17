@@ -3,7 +3,7 @@
 
 *.gradle text diff=groovy
 *.html     text diff=html
-*.java     text diff=java
+*.java     text diff=java eof=lf
 *.pem      text
 *.tmpl     text
 
